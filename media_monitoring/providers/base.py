@@ -1,13 +1,21 @@
-from typing import Tuple
 import xml.etree.ElementTree as ET
-from datetime import datetime, timezone, tzinfo
+from datetime import datetime, timezone
+from typing import Tuple
+
 from httpx import AsyncClient, TimeoutException
 
 
 class Provider:
+    id: int
+    name: str
+
     def __init__(self, client: AsyncClient, last_update: datetime) -> None:
         self._client = client
         self._last_update = last_update
+
+    @classmethod
+    def get_info(cls) -> Tuple:
+        return cls.id, cls.name
 
     @staticmethod
     def parse_pub_date(s: str):
@@ -26,9 +34,6 @@ class Provider:
         news = []
         for item in ch.findall("item"):
             news_date = self.parse_pub_date(item.findtext("pubDate"))
-            print(self._name)
-            print(news_date)
-            print(self._last_update)
             if news_date > self._last_update:
                 res = {}
                 title = item.findtext("title")
@@ -36,27 +41,24 @@ class Provider:
 
                 link = self.parse_link(item.findtext("link"))
                 res.update({"link": link})
-
                 res.update({"guid": item.findtext("guid")})
-
                 res.update({"date": news_date})
-                # res.update({"description": item.findtext("description")})
-
-                # enclosure = item.get("enclosure")
-                # if enclosure is not None:
-                #     res.update({"thumbnail": enclosure.get("url")})
                 news.append(res)
             else:
                 break
-        return self._name, news
+        return news
 
     async def poll(self) -> Tuple[str, dict]:
         try:
             res = await self._client.get(self._url, timeout=30)
         except TimeoutException:
-            return self._name, None
+            return (
+                self.id,
+                self.name,
+                [],
+            )
 
         if res.status_code == 200:
-            return self._name, self._parse(res.text)
+            return self.id, self.name, self._parse(res.text)
         else:
-            return self._name, None
+            return self.id, self.name, []
