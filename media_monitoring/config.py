@@ -37,18 +37,4 @@ PROVIDERS = (
     VedomostiProvider,
 )
 
-MEDIA_INFO = (
-    FontankaProvider.get_info(),
-    InterfaxProvider.get_info(),
-    IzvestiyaProvider.get_info(),
-    KommersantProvider.get_info(),
-    LentaruProvider.get_info(),
-    MBHProvider.get_info(),
-    MediazonaProvider.get_info(),
-    MeduzaProvider.get_info(),
-    RBKProvider.get_info(),
-    RiaProvider.get_info(),
-    RussianRTProvider.get_info(),
-    TVRainProvider.get_info(),
-    VedomostiProvider.get_info(),
-)
+MEDIA_INFO = [provider.get_info() for provider in PROVIDERS]

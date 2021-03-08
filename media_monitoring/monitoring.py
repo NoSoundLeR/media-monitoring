@@ -4,8 +4,8 @@ from datetime import datetime, timedelta, timezone
 
 from httpx import AsyncClient
 
-from media_monitoring.db import db
 from media_monitoring.config import PROVIDERS
+from media_monitoring.db import db
 from media_monitoring.telegram import escape_msg, send_notification
 
 log = logging.getLogger("media")

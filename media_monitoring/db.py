@@ -1,5 +1,5 @@
-import sys
 import logging
+import sys
 from typing import List, Optional
 
 from motor.motor_asyncio import AsyncIOMotorClient

@@ -1,13 +1,15 @@
 import argparse
 import asyncio
-import os
 import logging
+import os
 
 logging.basicConfig()
-
-DEBUG = os.getenv("DEBUG", "0") == "1"
+DEBUG = os.getenv("DEBUG") in (
+    "1",
+    "true",
+    "True",
+)
 level = logging.DEBUG if DEBUG else logging.INFO
-
 log = logging.getLogger("media")
 log.setLevel(level)
 
@@ -15,19 +17,18 @@ log.setLevel(level)
 def run():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-o", "--offset", type=int, default=0, help="monitoring offset is seconds"
+        "-o", "--offset", type=int, default=0, help="monitoring offset in seconds"
     )
     parser.add_argument(
         "-t", "--timeout", type=int, default=60, help="monitoring timeout"
     )
     parser.add_argument("-e", "--env-file", default=".env", help="path to env file")
-
     args = parser.parse_args()
 
     log.debug(f"offset: {args.offset}")
     log.debug(f"timeout: {args.timeout}")
 
-    log.info("Reading env file...")
+    log.debug("Reading env file...")
 
     with open(args.env_file, "r") as f:
         for line in f.readlines():
