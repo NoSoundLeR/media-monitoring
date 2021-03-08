@@ -1,0 +1,5 @@
+#!/bin/bash -e
+
+export PREFIX="poetry run"
+
+${PREFIX} python -m media_monitoring -o 60 -t 60
